@@ -8,9 +8,11 @@ wifi_device = "wlan1"
 @app.route('/')
 def index():
 
+    # Gets list of SSIDs with NetworkManage CLI commands and stores in *result variable.
     result = subprocess.check_output(["nmcli", "--colors", "no", "-m", "multiline", "--get-value", "SSID", "dev", "wifi", "list", "ifname", wifi_device])
-
+    # Decodes the byte string to a normal string and splits it into a list of SSIDs.
     ssids_list = result.decode().split('\n')
+    # Builds the HTML dropdown menu with the SSIDs.
     dropdowndisplay = f"""
         <!DOCTYPE html>
         <html>
@@ -42,17 +44,28 @@ def index():
     return dropdowndisplay
 
 
+print("======== \n DEBUG INFO \n========")
+
+
 @app.route('/submit',methods=['POST'])
 def submit():
+    # Handles form submission
     if request.method == 'POST':
+        # debugging print statement
+        print("======== \n DEBUG INFO \n========")
+        # prints all form keys submitted
         print(*list(request.form.keys()), sep = ", ")
+        # ssid and password values from form
         ssid = request.form['ssid']
         password = request.form['password']
+        # connect to wifi network using nmcli command
         connection_command = ["nmcli", "--colors", "no", "device", "wifi", "connect", ssid, "ifname", wifi_device]
+        # only add password if one was provided
         if len(password) > 0:
           connection_command.append("password")
           connection_command.append(password)
         result = subprocess.run(connection_command, capture_output=True)
+        # return result of connection attempt
         if result.stderr:
             return "Error: failed to connect to wifi network: <i>%s</i>" % result.stderr.decode()
         elif result.stdout:

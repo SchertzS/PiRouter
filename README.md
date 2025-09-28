@@ -18,7 +18,7 @@ instead of reconfiguring every device individually.
 This repo intends to build upon the excellent tutorial from the Raspberry Pi Foundation: https://www.raspberrypi.com/tutorials/host-a-hotel-wifi-hotspot/
 
 
-# Overview
+# Features
 
 1. **Public Wi-Fi side (WAN):**
 
